@@ -1,5 +1,6 @@
 import Joi from 'joi'
 import { StatusCodes } from 'http-status-codes'
+import ApiError from '~/utils/ApiError'
 
 const createNew = async(req, res, next) => {
   //Validate bat buoc phai co o Back-end vi day la diem cuoi de luu du lieu vao database
@@ -16,17 +17,12 @@ const createNew = async(req, res, next) => {
   })
 
   try {
-    // console.log('req.body:', req.body)
     // abortEarly: false de truong hop co nhieu error cua validation thi tra ve tat ca
     await correctCondition.validateAsync(req.body, { abortEarly: false })
-    // next()
-    res.status(StatusCodes.CREATED).json({ message: 'Validation: API create new boards' })
+    // Validate dữ liệu hợp lệ xong cho request sang controller
+    next()
   } catch (error) {
-    // console.log(error)
-    // console.log(newError)
-    res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
-      errors: new Error(error).message
-    })
+    next(new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message))
   }
 }
 
