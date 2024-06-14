@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-catch */
 //
 import { slugify } from '~/utils/formatters'
+import { boardModel } from '~/models/boardModel'
 
 const createNew = async ( reqBody ) => {
   try {
@@ -9,10 +10,13 @@ const createNew = async ( reqBody ) => {
       ...reqBody,
       // xoa dấu và thêm gạch ngang giữa các từ
       slug: slugify(reqBody.title)
-      // Goi toi tang Model de xu li luu ban ghi newBoard vao trong Database
     }
-    // Trong service luon phai co return
-    return newBoard
+    // Goi toi tang Model de xu li luu ban ghi newBoard vao trong Database
+    const createdBoard = await boardModel.createNew(newBoard)
+    // Lay ban ghi Board sau khi goi
+    const getNewBoard = await boardModel.findOneById(createdBoard.insertedId)
+    // // Trong service luon phai co return
+    return getNewBoard
   } catch (error) {
     throw error
   }

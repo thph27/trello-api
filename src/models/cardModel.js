@@ -15,7 +15,7 @@ const CARD_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.boolean().default(false)
 })
 
-export const cardModel = {
+export const columnModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA
 }
