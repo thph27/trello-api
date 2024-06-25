@@ -23,7 +23,7 @@ const createNew = async ( reqBody ) => {
     throw error
   }
 }
-const getDetails = async ( boardId ) => {
+const getDetails = async (boardId) => {
   try {
     const board = await boardModel.getDetails(boardId)
     if (!board) {
