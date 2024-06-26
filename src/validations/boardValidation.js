@@ -1,6 +1,7 @@
 import Joi from 'joi'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '~/utils/ApiError'
+import { BOARD_TYPES } from '~/utils/constants'
 
 const createNew = async(req, res, next) => {
   //Validate bat buoc phai co o Back-end vi day la diem cuoi de luu du lieu vao database
@@ -12,7 +13,8 @@ const createNew = async(req, res, next) => {
       'string.max': 'Title max 50 chars (thph27)',
       'string.trim': 'Title must not have leading or trailing whitespace (thph27)'
     }),
-    description: Joi.string().required().min(3).max(255).trim().strict()
+    description: Joi.string().required().min(3).max(255).trim().strict(),
+    type: Joi.string().valid(BOARD_TYPES.PUBLIC, BOARD_TYPES.PRIVATE).required()
 
   })
 
