@@ -34,17 +34,13 @@ const createNew = async(data) => {
     const validData = await validateBeforeCreate(data)
     const createdBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(validData)
     return createdBoard
-  } catch (error) {
-    throw new Error(error)
-  }
+  } catch (error) { throw new Error(error) }
 }
 const findOneById = async (id) => {
   try {
     const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOne({ _id: new ObjectId(id) })
     return result
-  } catch (error) {
-    throw new Error(error)
-  }
+  } catch (error) { throw new Error(error) }
 }
 // Query tong hop de lay toan bo columns va cards thuoc ve Board
 const getDetails = async (id) => {
@@ -72,13 +68,26 @@ const getDetails = async (id) => {
     return result[0] || null
   } catch (error) { throw new Error(error) }
 }
+// Push 1 gia tri column Id vao cuoi mang ColumnOrderIds
+const pushColumnOrderIds = async (column) => {
+  try {
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(column.boardId) },
+      { $push: { columnOrderIds: new ObjectId(column._id) } },
+      { returnDocument: 'after' }
+    )
+
+    return result.value || null
+  } catch (error) { throw new Error(error) }
+}
 
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
   createNew,
   findOneById,
-  getDetails
+  getDetails,
+  pushColumnOrderIds
 }
 
 // boardId: 667b7c0f2490112fe129ddd9
