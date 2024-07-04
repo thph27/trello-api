@@ -20,9 +20,7 @@ const createNew = async ( reqBody ) => {
     const getNewBoard = await boardModel.findOneById(createdBoard.insertedId)
     // // Trong service luon phai co return
     return getNewBoard
-  } catch (error) {
-    throw error
-  }
+  } catch (error) { throw error }
 }
 const getDetails = async (boardId) => {
   try {
