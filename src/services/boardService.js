@@ -5,6 +5,8 @@ import { boardModel } from '~/models/boardModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { cloneDeep } from 'lodash'
+import { columnModel } from '~/models/columnModel'
+import { cardModel } from '~/models/cardModel'
 
 const createNew = async ( reqBody ) => {
   try {
@@ -54,9 +56,30 @@ const update = async (boardId, reqBody) => {
     return updatedBoard
   } catch (error) { throw error }
 }
+const moveCardToDifferentColumn = async (reqBody) => {
+  try {
+    // Khi di chuyen card sang column khac:
+    // B1 : Cap nhat mang cardOrderIds cua column ban dau chua no (xoa id cua card do di)
+    await columnModel.update(reqBody.prevColumnId, {
+      cardOrderIds: reqBody.prevCardOrderIds,
+      updatedAt: Date.now()
+    })
+    // B2 : Cap nhat mang cardOrderIds cua columnb tiep theo (them id cua card vao)
+    await columnModel.update(reqBody.nextColumnId, {
+      cardOrderIds: reqBody.nextCardOrderIds,
+      updatedAt: Date.now()
+    })
+    // B3: Cap nhat la columnId cua cai card da keo
+    await cardModel.update(reqBody.currentCardId, {
+      columnId: reqBody.nextColumnId
+    })
 
+    return { updateResult: 'Successfully!' }
+  } catch (error) { throw error }
+}
 export const boardService = {
   createNew,
   getDetails,
-  update
+  update,
+  moveCardToDifferentColumn
 }
