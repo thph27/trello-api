@@ -37,9 +37,9 @@ const createNew = async(data) => {
     return createdBoard
   } catch (error) { throw new Error(error) }
 }
-const findOneById = async (id) => {
+const findOneById = async (boardId) => {
   try {
-    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOne({ _id: new ObjectId(id) })
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOne({ _id: new ObjectId(boardId) })
     return result
   } catch (error) { throw new Error(error) }
 }
@@ -77,7 +77,18 @@ const pushColumnOrderIds = async (column) => {
       { $push: { columnOrderIds: new ObjectId(column._id) } },
       { returnDocument: 'after' }
     )
-
+    return result
+  } catch (error) { throw new Error(error) }
+}
+// Lay 1 phan tu columnId ra khoi mang columnOrderIds
+// Dung $pull de lay 1 phan tu va xoa no di
+const pullColumnOrderIds = async (column) => {
+  try {
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(column.boardId) },
+      { $pull: { columnOrderIds: new ObjectId(column._id) } },
+      { returnDocument: 'after' }
+    )
     return result
   } catch (error) { throw new Error(error) }
 }
@@ -112,7 +123,8 @@ export const boardModel = {
   findOneById,
   getDetails,
   pushColumnOrderIds,
-  update
+  update,
+  pullColumnOrderIds
 }
 
 // boardId: 667b7c0f2490112fe129ddd9

@@ -38,13 +38,11 @@ const createNew = async(data) => {
     throw new Error(error)
   }
 }
-const findOneById = async (id) => {
+const findOneById = async (columnId) => {
   try {
-    const result = await GET_DB().collection(COLUMN_COLLECTION_NAME).findOne({ _id: new ObjectId(id) })
+    const result = await GET_DB().collection(COLUMN_COLLECTION_NAME).findOne({ _id: new ObjectId(columnId) })
     return result
-  } catch (error) {
-    throw new Error(error)
-  }
+  } catch (error) { throw new Error(error) }
 }
 
 // Push 1 gia tri card Id vao cuoi mang CardOrderIds
@@ -77,7 +75,12 @@ const update = async (columnId, updateData) => {
       { $set: updateData },
       { returnDocument: 'after' }
     )
-
+    return result
+  } catch (error) { throw new Error(error) }
+}
+const deleteOneById = async (columnId) => {
+  try {
+    const result = await GET_DB().collection(COLUMN_COLLECTION_NAME).deleteOne({ _id: new ObjectId(columnId) })
     return result
   } catch (error) { throw new Error(error) }
 }
@@ -88,5 +91,6 @@ export const columnModel = {
   createNew,
   findOneById,
   pushCardOrderIds,
-  update
+  update,
+  deleteOneById
 }
